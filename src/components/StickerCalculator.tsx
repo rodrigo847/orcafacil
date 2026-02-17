@@ -61,12 +61,13 @@ const DEFAULT_MATERIAL_PRICES: Record<string, MaterialPrice> = {
 // Materiais rígidos disponíveis
 const RIGID_MATERIALS: Record<string, MaterialPrice> = {
   sem_rigido: { name: "Não", pricePerM2: 0 },
-  ps_1mm: { name: "PS 1mm", pricePerM2: 1000 },
-  ps_2mm: { name: "PS 2mm", pricePerM2: 75 },
-  ps_3mm: { name: "PS 3mm", pricePerM2: 100 },
-  acrilico_2mm: { name: "Acrílico 2mm", pricePerM2: 100 },
-  acrilico_3mm: { name: "Acrílico 3mm", pricePerM2: 125 },
-  acrilico_6mm: { name: "Acrílico 6mm", pricePerM2: 180 },
+  forn_cliente: { name: "Forn/Cliente", pricePerM2: 95 },
+  ps_1mm: { name: "PS 1mm", pricePerM2: 180 },
+  ps_2mm: { name: "PS 2mm", pricePerM2: 250 },
+  ps_3mm: { name: "PS 3mm", pricePerM2: 330 },
+  acrilico_2mm: { name: "Acrílico 2mm", pricePerM2: 400 },
+  acrilico_3mm: { name: "Acrílico 3mm", pricePerM2: 500 },
+  acrilico_6mm: { name: "Acrílico 6mm", pricePerM2: 600 },
 };
 
 // Tipos de impressão disponíveis
