@@ -23,7 +23,7 @@ const Index = () => {
       </header>
 
       {/* Main Content */}
-      <main className="container px-50 py-10 bg-blue-200">
+      <main className="container px-1 md:px-50 py-10 bg-blue-200">
         {/* Hero Section */}
         <div className="mb-4 text-center">
           <h2 className="text-2xl md:text-3xl font-bold text-foreground mb-2">

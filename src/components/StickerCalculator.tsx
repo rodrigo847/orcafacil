@@ -21,7 +21,7 @@ import {
 } from "@/components/ui/table";
 import { Plus, Trash2, Calculator, Settings2, Save, FileDown, Share2 } from "lucide-react";
 import jsPDF from "jspdf";
-import autoTable from "jspdf-autotable";
+import autoTable, { type Styles } from "jspdf-autotable";
 
 interface StickerItem {
   id: number;
@@ -221,10 +221,35 @@ const StickerCalculator = () => {
       formatCurrency(item.totalPrice),
     ]);
     
+    const pageWidth = doc.internal.pageSize.getWidth();
+    const tableWidth = pageWidth * 0.95;
+    const sideMargin = (pageWidth - tableWidth) / 2;
+    const baseColumnWidths = [18, 22, 20, 16, 10, 10, 12, 14, 8, 18, 18];
+    const totalBaseWidth = baseColumnWidths.reduce((sum, value) => sum + value, 0);
+    const scaledColumnWidths = baseColumnWidths.map(
+      (value) => (value * tableWidth) / totalBaseWidth
+    );
+
+    const columnStyles: Record<number, Partial<Styles>> = {
+      0: { cellWidth: scaledColumnWidths[0] },
+      1: { cellWidth: scaledColumnWidths[1] },
+      2: { cellWidth: scaledColumnWidths[2] },
+      3: { cellWidth: scaledColumnWidths[3] },
+      4: { cellWidth: scaledColumnWidths[4], halign: "center" as const },
+      5: { cellWidth: scaledColumnWidths[5], halign: "center" as const },
+      6: { cellWidth: scaledColumnWidths[6], halign: "center" as const },
+      7: { cellWidth: scaledColumnWidths[7], halign: "center" as const },
+      8: { cellWidth: scaledColumnWidths[8], halign: "center" as const },
+      9: { cellWidth: scaledColumnWidths[9], halign: "right" as const },
+      10: { cellWidth: scaledColumnWidths[10], halign: "right" as const },
+    };
+
     // Generate table
     autoTable(doc, {
       startY: 45,
-      head: [["Tam.", "Mat.", "Impressão", "Rígido", "Verso", "Aplic.", "Recorte", "Área", "Qtd", "Preço Unit.", "Total"]],
+      margin: { left: sideMargin, right: sideMargin },
+      tableWidth,
+      head: [["Tam.", "Mat.", "Impressão", "Rígido.", "Verso", "Aplic.", "Corte", "Área", "Qtd", "V. Unit", "Total"]],
       body: tableData,
       theme: "striped",
       headStyles: {
@@ -235,21 +260,10 @@ const StickerCalculator = () => {
       },
       styles: {
         fontSize: 7,
-        cellPadding: 3,
+        cellPadding: 2,
+        overflow: "linebreak",
       },
-      columnStyles: {
-        0: { cellWidth: 20 },
-        1: { cellWidth: 24 },
-        2: { cellWidth: 22 },
-        3: { cellWidth: 22 },
-        4: { cellWidth: 12, halign: "center" },
-        5: { cellWidth: 12, halign: "center" },
-        6: { cellWidth: 12, halign: "center" },
-        7: { cellWidth: 16, halign: "center" },
-        8: { cellWidth: 10, halign: "center" },
-        9: { cellWidth: 20, halign: "right" },
-        10: { cellWidth: 20, halign: "right" },
-      },
+      columnStyles,
     });
     
     // Get final Y position after table
@@ -325,9 +339,9 @@ const StickerCalculator = () => {
 
   return (
     
-    <div className="space-y-6 "> 
+  <div className="space-y-6 "> 
     
-    <div className="teste py-6 px-32" >
+    <div className="teste py-6 md:px-28 lg:px-48 sm:px-4" >
                 
       {/* Formulário de entrada */}
       <Card className="border-border shadow-sm mx-auto">
@@ -341,7 +355,7 @@ const StickerCalculator = () => {
         
         <CardContent>
           
-          <div className="grid grid-cols-3 gap-3">
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
             <div className="space-y-2">
               <Label htmlFor="height" className="text-sm font-medium text-foreground">
                 Altura (cm)
@@ -640,11 +654,11 @@ const StickerCalculator = () => {
                     <TableHead className="text-foreground">Mat.</TableHead>
                     <TableHead className="text-foreground">Imp.</TableHead>
                     <TableHead className="text-foreground">Rígido</TableHead>
-                    <TableHead className="text-foreground text-center">Verso</TableHead>
-                    <TableHead className="text-foreground text-center">Aplicação</TableHead>
-                    <TableHead className="text-foreground text-center">Recorte Esp.</TableHead>
-                    <TableHead className="text-foreground text-center">Área (cm²)</TableHead>
-                    <TableHead className="text-foreground text-center">Qtd</TableHead>
+                    <TableHead className="text-foreground">Verso</TableHead>
+                    <TableHead className="text-foreground">Aplicação</TableHead>
+                    <TableHead className="text-foreground">Recorte Esp.</TableHead>
+                    <TableHead className="text-foreground">Área (cm²)</TableHead>
+                    <TableHead className="text-foreground">Qtd</TableHead>
                     <TableHead className="text-foreground text-right">Preço Unit.</TableHead>
                     <TableHead className="text-foreground text-right">Total</TableHead>
                     <TableHead className="w-12"></TableHead>
