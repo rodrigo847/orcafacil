@@ -249,7 +249,7 @@ const StickerCalculator = () => {
       startY: 45,
       margin: { left: sideMargin, right: sideMargin },
       tableWidth,
-      head: [["Tam.", "Mat.", "Impressão", "Rígido.", "Verso", "Aplic.", "Corte", "Área", "Qtd", "V. Unit", "Total"]],
+      head: [["Tam.", "Material", "Impressão", "Rígido.", "Verso", "Aplic.", "Corte", "Área", "Qtd", "V. Unit", "Total"]],
       body: tableData,
       theme: "striped",
       headStyles: {
@@ -544,6 +544,8 @@ const StickerCalculator = () => {
           )}
         </CardContent>
 
+
+          {/*
         <div className="observacao my-4 mx-4 p-4 bg-red-50 border border-red-200 rounded-lg ">
           <p className="text-center text-md font-sm text-primary">
             * A opção: <strong> Material cliente/Rígido </strong> deve estar de acordo com as 
@@ -551,7 +553,7 @@ const StickerCalculator = () => {
             devidamente reta e limpa para entrar na maquina UV! Tamanho máximo 60x90cm e altura maxima 15cm.
             Já uma aplicação de adesivo, geralmente tamanhos de 1.00m x (até) 2.00m para manter aplicação exata.
           </p>
-        </div>
+        </div>*/}
       </Card>
 
       {/*  
@@ -651,8 +653,8 @@ const StickerCalculator = () => {
                 <TableHeader>
                   <TableRow>
                     <TableHead className="text-foreground">Tam.</TableHead>
-                    <TableHead className="text-foreground">Mat.</TableHead>
-                    <TableHead className="text-foreground">Imp.</TableHead>
+                    <TableHead className="text-foreground">Material</TableHead>
+                    <TableHead className="text-foreground">Impressão</TableHead>
                     <TableHead className="text-foreground">Rígido</TableHead>
                     <TableHead className="text-foreground">Verso</TableHead>
                     <TableHead className="text-foreground">Aplicação</TableHead>
