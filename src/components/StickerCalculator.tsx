@@ -54,8 +54,8 @@ const DEFAULT_MATERIAL_PRICES: Record<string, MaterialPrice> = {
   vinil_branco_fosco: { name: "Adesivo Vinil Fosco", pricePerM2: 115 },
   vinil_branco_brilho: { name: "Adesivo Vinil Brilho", pricePerM2: 115 },
   vinil_transparente_brilho: { name: "Adesivo Vinil Transparente", pricePerM2: 135 },
-  papel_adesivo_fosco: { name: "Adesivo Papel Fosco (max: 33x48cm)", pricePerM2: 55 },
-  papel_adesivo_brilho: { name: "Adesivo Papel Brilho (max: 33x48cm)", pricePerM2: 55 },
+  papel_adesivo_fosco: { name: "Adesivo Papel Fosco (Somente Laser)", pricePerM2: 55 },
+  papel_adesivo_brilho: { name: "Adesivo Papel Brilho (Somente Laser)", pricePerM2: 55 },
 };
 
 // Materiais rígidos disponíveis
