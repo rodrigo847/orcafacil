@@ -32,15 +32,11 @@ interface StickerItem {
   printingType: string;
   rigidMaterial: string;
   verso: boolean;
-  aplicacao: boolean;
   quantity: number;
   area: number;
   unitPrice: number;
   totalPrice: number;
-  specialCut: boolean;
-  specialCutPrice: number;
   versoPrice: number;
-  aplicacaoPrice: number;
 }
 
 interface MaterialPrice {
@@ -54,17 +50,17 @@ const DEFAULT_MATERIAL_PRICES: Record<string, MaterialPrice> = {
   vinil_branco_fosco: { name: "Adesivo Vinil Fosco", pricePerM2: 115 },
   vinil_branco_brilho: { name: "Adesivo Vinil Brilho", pricePerM2: 115 },
   vinil_transparente_brilho: { name: "Adesivo Vinil Transparente", pricePerM2: 135 },
-  papel_adesivo_fosco: { name: "Adesivo Papel Fosco (Somente Laser)", pricePerM2: 55 },
-  papel_adesivo_brilho: { name: "Adesivo Papel Brilho (Somente Laser)", pricePerM2: 55 },
+  papel_adesivo_fosco: { name: "Adesivo Papel Fosco (Somente Laser)", pricePerM2: 80 },
+  papel_adesivo_brilho: { name: "Adesivo Papel Brilho (Somente Laser)", pricePerM2: 80 },
 };
 
 // Materiais rígidos disponíveis
 const RIGID_MATERIALS: Record<string, MaterialPrice> = {
   sem_rigido: { name: "Não", pricePerM2: 0 },
-  forn_cliente: { name: "Forn/Cliente", pricePerM2: 95 },
-  ps_1mm: { name: "PS 1mm", pricePerM2: 180 },
+  forn_cliente: { name: "Forn/Cliente", pricePerM2: 195 },
+  ps_1mm: { name: "PS 1mm", pricePerM2: 200 },
   ps_2mm: { name: "PS 2mm", pricePerM2: 250 },
-  ps_3mm: { name: "PS 3mm", pricePerM2: 330 },
+  ps_3mm: { name: "PS 3mm", pricePerM2: 380 },
   acrilico_2mm: { name: "Acrílico 2mm", pricePerM2: 400 },
   acrilico_3mm: { name: "Acrílico 3mm", pricePerM2: 500 },
   acrilico_6mm: { name: "Acrílico 6mm", pricePerM2: 600 },
@@ -74,14 +70,11 @@ const RIGID_MATERIALS: Record<string, MaterialPrice> = {
 const PRINTING_TYPES = {
   sem_impressao: { name: "Sem impressão", pricePerM2: 0 },
   eco_solvente: { name: "Eco-solvente", pricePerM2: 80 },
-  uv: { name: "Imp. UV", pricePerM2: 95 },
+  uv: { name: "Imp. UV", pricePerM2: 48 },
   laser: { name: "Imp. Laser", pricePerM2: 45 },
 };
 
 
-
-const DEFAULT_SPECIAL_CUT_PRICE = 15; // Preço adicional por m² para recorte especial
-const APLICACAO_PRICE = 2; // Preço fixo por item para aplicação
 
 const StickerCalculator = () => {
   const [items, setItems] = useState<StickerItem[]>([]);
@@ -92,16 +85,12 @@ const StickerCalculator = () => {
   const [printingType, setPrintingType] = useState<string>("sem_impressao");
   const [rigidMaterial, setRigidMaterial] = useState<string>("sem_rigido");
   const [quantity, setQuantity] = useState<string>("1");
-  const [specialCut, setSpecialCut] = useState<boolean>(false);
   const [verso, setVerso] = useState<boolean>(false);
-  const [aplicacao, setAplicacao] = useState<boolean>(false);
   
   // Preços editáveis
   const [materialPrices, setMaterialPrices] = useState<Record<string, MaterialPrice>>(DEFAULT_MATERIAL_PRICES);
-  const [specialCutPrice, setSpecialCutPrice] = useState<number>(DEFAULT_SPECIAL_CUT_PRICE);
   const [editingPrices, setEditingPrices] = useState<boolean>(false);
   const [tempPrices, setTempPrices] = useState<Record<string, number>>({});
-  const [tempSpecialCutPrice, setTempSpecialCutPrice] = useState<string>(String(DEFAULT_SPECIAL_CUT_PRICE));
 
   const calculateArea = (h: number, w: number, u: "m²" | "mm" | "cm"): number => {
     if (u === "m²") {
@@ -124,10 +113,13 @@ const StickerCalculator = () => {
     const pricePerM2 = materialPrices[material].pricePerM2;
     const printingPrice = PRINTING_TYPES[printingType as keyof typeof PRINTING_TYPES]?.pricePerM2 || 0;
     const rigidPrice = RIGID_MATERIALS[rigidMaterial as keyof typeof RIGID_MATERIALS]?.pricePerM2 || 0;
+    
+    // Aplicar 40% de acréscimo para peças menores que 5x5cm (área < 0.0025 m²)
+    const isSmallPiece = area < 0.0025;
+    const smallPieceMultiplier = isSmallPiece ? 1.4 : 1;
+    
     const versoCost = verso ? area * (printingPrice * 0.4) : 0;
-    const specialCutCost = specialCut ? area * specialCutPrice : 0;
-    const aplicacaoCost = aplicacao ? APLICACAO_PRICE : 0;
-    const unitPrice = area * (pricePerM2 + printingPrice + rigidPrice) + versoCost + specialCutCost + aplicacaoCost;
+    const unitPrice = area * (pricePerM2 + printingPrice + rigidPrice) * smallPieceMultiplier + versoCost;
     const totalPrice = unitPrice * qty;
 
     const newItem: StickerItem = {
@@ -139,25 +131,21 @@ const StickerCalculator = () => {
       printingType,
       rigidMaterial,
       verso,
-      aplicacao,
       quantity: qty,
       area,
       unitPrice,
       totalPrice,
-      specialCut,
-      specialCutPrice: specialCutCost,
       versoPrice: versoCost,
-      aplicacaoPrice: aplicacaoCost,
     };
 
     setItems([...items, newItem]);
     setHeight("");
     setWidth("");
     setQuantity("1");
-    setSpecialCut(false);
     setVerso(false);
-    setAplicacao(false);
     setRigidMaterial("sem_rigido");
+    setPrintingType("sem_impressao");
+    setMaterial("sem_material");
   };
 
   const removeItem = (id: number) => {
@@ -214,8 +202,6 @@ const StickerCalculator = () => {
       PRINTING_TYPES[item.printingType as keyof typeof PRINTING_TYPES]?.name || item.printingType,
       RIGID_MATERIALS[item.rigidMaterial as keyof typeof RIGID_MATERIALS]?.name || item.rigidMaterial,
       item.verso ? "Sim" : "Não",
-      item.aplicacao ? "Sim" : "Não",
-      item.specialCut ? "Sim" : "Não",
       `${(item.area * 10000).toFixed(2)} cm²`,
       item.quantity.toString(),
       formatCurrency(item.unitPrice),
@@ -225,7 +211,7 @@ const StickerCalculator = () => {
     const pageWidth = doc.internal.pageSize.getWidth();
     const tableWidth = pageWidth * 0.95;
     const sideMargin = (pageWidth - tableWidth) / 2;
-    const baseColumnWidths = [18, 22, 20, 16, 10, 10, 12, 14, 8, 18, 18];
+    const baseColumnWidths = [18, 22, 20, 16, 10, 14, 8, 18, 18];
     const totalBaseWidth = baseColumnWidths.reduce((sum, value) => sum + value, 0);
     const scaledColumnWidths = baseColumnWidths.map(
       (value) => (value * tableWidth) / totalBaseWidth
@@ -240,9 +226,7 @@ const StickerCalculator = () => {
       5: { cellWidth: scaledColumnWidths[5], halign: "center" as const },
       6: { cellWidth: scaledColumnWidths[6], halign: "center" as const },
       7: { cellWidth: scaledColumnWidths[7], halign: "center" as const },
-      8: { cellWidth: scaledColumnWidths[8], halign: "center" as const },
-      9: { cellWidth: scaledColumnWidths[9], halign: "right" as const },
-      10: { cellWidth: scaledColumnWidths[10], halign: "right" as const },
+      8: { cellWidth: scaledColumnWidths[8], halign: "right" as const },
     };
 
     // Generate table
@@ -250,7 +234,7 @@ const StickerCalculator = () => {
       startY: 45,
       margin: { left: sideMargin, right: sideMargin },
       tableWidth,
-      head: [["Tam.", "Material", "Impressão", "Rígido.", "Verso", "Aplic.", "Corte", "Área", "Qtd", "V. Unit", "Total"]],
+      head: [["Tam.", "Material", "Impressão", "Rígido.", "Verso", "Área", "Qtd", "Preço Unit", "Total"]],
       body: tableData,
       theme: "striped",
       headStyles: {
@@ -280,7 +264,8 @@ const StickerCalculator = () => {
     doc.setFont("helvetica", "italic");
     doc.setTextColor(100, 100, 100);
     doc.text(
-      `Este orçamento é válido por 7 dias a contar da data de emissão (até ${getValidityDate(currentDate)}).`,
+      `Este orçamento é válido por 7 dias a contar da data de emissão: ( ${getValidityDate(currentDate)}).
+      Os adesivos ja estão sendo orçados com meio corte e entrega em cartelas para facilitar envio`,
       105,
       finalY + 30,
       { align: "center" }
@@ -318,7 +303,6 @@ const StickerCalculator = () => {
       prices[key] = value.pricePerM2;
     });
     setTempPrices(prices);
-    setTempSpecialCutPrice(String(specialCutPrice));
     setEditingPrices(true);
   };
 
@@ -330,7 +314,6 @@ const StickerCalculator = () => {
       }
     });
     setMaterialPrices(newPrices);
-    setSpecialCutPrice(parseFloat(tempSpecialCutPrice) || DEFAULT_SPECIAL_CUT_PRICE);
     setEditingPrices(false);
   };
 
@@ -423,8 +406,17 @@ const StickerCalculator = () => {
               <Label htmlFor="Adesivo" className="text-sm font-medium text-foreground">
                 Adesivo
               </Label>
-              <Select value={material} onValueChange={setMaterial}>
-                <SelectTrigger id="Adesivo" className="bg-background">
+              <Select 
+                value={material} 
+                onValueChange={(value) => {
+                  setMaterial(value);
+                  if (value !== "sem_material") {
+                    setRigidMaterial("sem_rigido");
+                  }
+                }}
+                disabled={rigidMaterial !== "sem_rigido"}
+              >
+                <SelectTrigger id="Adesivo" className="bg-background" disabled={rigidMaterial !== "sem_rigido"}>
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -441,8 +433,19 @@ const StickerCalculator = () => {
               <Label htmlFor="rigidMaterial" className="text-sm font-medium text-foreground">
                 Material Rígido              
                 </Label>
-              <Select value={rigidMaterial} onValueChange={setRigidMaterial}>
-                <SelectTrigger id="rigidMaterial" className="bg-background">
+              <Select 
+                value={rigidMaterial} 
+                onValueChange={(value) => {
+                  setRigidMaterial(value);
+                  if (value !== "sem_rigido") {
+                    setMaterial("sem_material");
+                  } else {
+                    setVerso(false);
+                  }
+                }}
+                disabled={material !== "sem_material"}
+              >
+                <SelectTrigger id="rigidMaterial" className="bg-background" disabled={material !== "sem_material"}>
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -473,42 +476,23 @@ const StickerCalculator = () => {
             <div className="col-span-2 md:col-span-1 flex items-end gap-2">
               <div className="flex items-center space-x-2 pb-2">
                 <Checkbox
-                  id="specialCut"
-                  checked={specialCut}
-                  onCheckedChange={(checked) => setSpecialCut(checked as boolean)}
-                />
-                <Label htmlFor="specialCut" className="text-sm font-medium text-foreground cursor-pointer">
-                  Recorte (+{formatCurrency(specialCutPrice)}/m²)
-                </Label>
-              </div>
-            </div>
-
-            <div className="col-span-2 md:col-span-1 flex items-end gap-2">
-              <div className="flex items-center space-x-2 pb-2">
-                <Checkbox
                   id="+verso"
                   checked={verso}
                   onCheckedChange={(checked) => setVerso(checked as boolean)}
+                  disabled={rigidMaterial === "sem_rigido"}
                 />
-                <Label htmlFor="+verso" className="text-sm font-medium text-foreground cursor-pointer">
-                  +Verso (+40% imp.)
+                <Label 
+                  htmlFor="+verso" 
+                  className={`text-sm cursor-pointer ${
+                    rigidMaterial === "sem_rigido" 
+                      ? "text-muted-foreground opacity-50" 
+                      : "text-foreground"
+                  }`}
+                >
+                  +Verso (Se dois lados impressos)
                 </Label>
               </div>
             </div>
-
-            <div className="col-span-2 md:col-span-1 flex items-end gap-2">
-              <div className="flex items-center space-x-2 pb-2">
-                <Checkbox
-                  id="aplicacao"
-                  checked={aplicacao}
-                  onCheckedChange={(checked) => setAplicacao(checked as boolean)}
-                />
-                <Label htmlFor="aplicacao" className="text-sm font-medium text-foreground cursor-pointer">
-                  Aplicação (apenas rígido eco-solvente) (+{formatCurrency(APLICACAO_PRICE)})
-                </Label>
-              </div>
-            </div>
-            
 
             <div className="flex items-end">
               <Button
@@ -524,15 +508,23 @@ const StickerCalculator = () => {
 
           {/* Preview do cálculo */}
           {height && width && (
-            <div className="mt-4 p-3 rounded-lg bg-secondary/50 text-sm">
-              <span className="text-muted-foreground">Prévia: </span>
-              <span className="font-medium text-foreground">
-                {height} x {width} {unit} = {" "}
-                {(calculateArea(parseFloat(height), parseFloat(width), unit) * 10000).toFixed(2)} cm²
-                {" "}({materialPrices[material].name} - {formatCurrency(materialPrices[material].pricePerM2)}/m² + {PRINTING_TYPES[printingType as keyof typeof PRINTING_TYPES]?.name}{rigidMaterial !== "sem_rigido" && ` + ${RIGID_MATERIALS[rigidMaterial as keyof typeof RIGID_MATERIALS]?.name}`}{verso && " + Verso"})
-                {specialCut && " + Recorte"}
-              </span>
-            </div>
+            <>
+              <div className="mt-4 p-3 rounded-lg bg-secondary/50 text-sm">
+                <span className="text-muted-foreground">Prévia: </span>
+                <span className="font-medium text-foreground">
+                  {height} x {width} {unit} = {" "}
+                  {(calculateArea(parseFloat(height), parseFloat(width), unit) * 10000).toFixed(2)} cm²
+                  {" "}({materialPrices[material].name} - {formatCurrency(materialPrices[material].pricePerM2)}/m² + {PRINTING_TYPES[printingType as keyof typeof PRINTING_TYPES]?.name}{rigidMaterial !== "sem_rigido" && ` + ${RIGID_MATERIALS[rigidMaterial as keyof typeof RIGID_MATERIALS]?.name}`}{verso && " + Verso"})
+                </span>
+              </div>
+              {calculateArea(parseFloat(height), parseFloat(width), unit) < 0.0025 && (
+                <div className="mt-2 p-3 rounded-lg bg-orange-50 border border-orange-300">
+                  <p className="text-center text-sm font-medium text-orange-700">
+                    ⚠️ Peça pequena (&lt; 5x5cm): Acréscimo de 40% aplicado devido à complexidade do corte.
+                  </p>
+                </div>
+              )}
+            </>
           )}
 
           {/* Aviso de compra mínima */}
@@ -546,15 +538,15 @@ const StickerCalculator = () => {
         </CardContent>
 
 
-          {/*
+          
         <div className="observacao my-4 mx-4 p-4 bg-red-50 border border-red-200 rounded-lg ">
-          <p className="text-center text-md font-sm text-primary">
-            * A opção: <strong> Material cliente/Rígido </strong> deve estar de acordo com as 
+          <p className="text-center text-sm font-sm text-primary">
+            * A opção: <strong> Rígido (forn/Cliente) </strong> deve estar de acordo com as 
             especificações técnicas para garantir a qualidade do serviço. Ex: Chapa de metal 20x30cm precisa estar
             devidamente reta e limpa para entrar na maquina UV! Tamanho máximo 60x90cm e altura maxima 15cm.
             Já uma aplicação de adesivo, geralmente tamanhos de 1.00m x (até) 2.00m para manter aplicação exata.
           </p>
-        </div>*/}
+        </div>      
       </Card>
 
       {/*  
@@ -658,8 +650,6 @@ const StickerCalculator = () => {
                     <TableHead className="text-foreground">Impressão</TableHead>
                     <TableHead className="text-foreground">Rígido</TableHead>
                     <TableHead className="text-foreground">Verso</TableHead>
-                    <TableHead className="text-foreground">Aplicação</TableHead>
-                    <TableHead className="text-foreground">Recorte Esp.</TableHead>
                     <TableHead className="text-foreground">Área (cm²)</TableHead>
                     <TableHead className="text-foreground">Qtd</TableHead>
                     <TableHead className="text-foreground text-right">Preço Unit.</TableHead>
@@ -678,12 +668,6 @@ const StickerCalculator = () => {
                       <TableCell>{RIGID_MATERIALS[item.rigidMaterial as keyof typeof RIGID_MATERIALS]?.name || item.rigidMaterial}</TableCell>
                       <TableCell className="text-center">
                         {item.verso ? "Sim" : "Não"}
-                      </TableCell>
-                      <TableCell className="text-center">
-                        {item.aplicacao ? "Sim" : "Não"}
-                      </TableCell>
-                      <TableCell className="text-center">
-                        {item.specialCut ? "Sim" : "Não"}
                       </TableCell>
                       <TableCell className="text-center">
                         {(item.area * 10000).toFixed(2)}
