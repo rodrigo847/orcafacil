@@ -234,7 +234,7 @@ const StickerCalculator = () => {
       startY: 45,
       margin: { left: sideMargin, right: sideMargin },
       tableWidth,
-      head: [["Tam.", "Material", "Impressão", "Rígido.", "Verso", "Área", "Qtd", "Preço Unit", "Total"]],
+      head: [["Tam.", "Adesivo", "Impressão", "Rígido.", "Verso", "Área", "Qtd", "Preço Unit", "Total"]],
       body: tableData,
       theme: "striped",
       headStyles: {
@@ -646,7 +646,7 @@ const StickerCalculator = () => {
                 <TableHeader>
                   <TableRow>
                     <TableHead className="text-foreground">Tam.</TableHead>
-                    <TableHead className="text-foreground">Material</TableHead>
+                    <TableHead className="text-foreground">Adesivo</TableHead>
                     <TableHead className="text-foreground">Impressão</TableHead>
                     <TableHead className="text-foreground">Rígido</TableHead>
                     <TableHead className="text-foreground">Verso</TableHead>
