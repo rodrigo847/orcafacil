@@ -57,7 +57,7 @@ const DEFAULT_MATERIAL_PRICES: Record<string, MaterialPrice> = {
 // Materiais rígidos disponíveis
 const RIGID_MATERIALS: Record<string, MaterialPrice> = {
   sem_rigido: { name: "Não", pricePerM2: 0 },
-  forn_cliente: { name: "Forn/Cliente", pricePerM2: 195 },
+  forn_cliente: { name: "Forn/Cliente", pricePerM2: 475 },
   ps_1mm: { name: "PS 1mm", pricePerM2: 200 },
   ps_2mm: { name: "PS 2mm", pricePerM2: 250 },
   ps_3mm: { name: "PS 3mm", pricePerM2: 380 },
