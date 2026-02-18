@@ -1,18 +1,15 @@
-# Welcome to your Lovable project
+# Bem vindo ao projeto de orçamento
 
-## Project info
+## Informação Projeto
 
-**URL**: https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID
+**URL**: 
 
-## How can I edit this code?
+## Como esse código foi editado?
 
-There are several ways of editing your application.
+O início do projeto foi pelo app Lovable, porém, com a continuidade de aprofundar os conhecimentos
+em programação, copiei o repositório e instalei o mesmo pelo vscode junto com o Copilot/github. Estou bem
+satisfeito com a evolução rápida no desenvolvimento e resultado da IA.
 
-**Use Lovable**
-
-Simply visit the [Lovable Project](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and start prompting.
-
-Changes made via Lovable will be committed automatically to this repo.
 
 **Use your preferred IDE**
 
