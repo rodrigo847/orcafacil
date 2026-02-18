@@ -109,6 +109,16 @@ const StickerCalculator = () => {
       return;
     }
 
+    if (qty > 100) {
+      alert("Quantidade máxima permitida: 100 unidades");
+      return;
+    }
+
+    if (material === "sem_material" && rigidMaterial === "sem_rigido") {
+      alert("É obrigatório escolher Adesivo ou Material Rígido");
+      return;
+    }
+
     const area = calculateArea(h, w, unit);
     const pricePerM2 = materialPrices[material].pricePerM2;
     const printingPrice = PRINTING_TYPES[printingType as keyof typeof PRINTING_TYPES]?.pricePerM2 || 0;
@@ -271,8 +281,36 @@ const StickerCalculator = () => {
       { align: "center" }
     );
     
+    let observationsY = finalY + 50;
+    
+    // Observações condicionais
+    if (items.some(item => item.quantity === 100)) {
+      doc.setFontSize(8);
+      doc.setFont("helvetica", "bold");
+      doc.setTextColor(200, 50, 50);
+      const obs1Lines = doc.splitTextToSize(
+        "OBSERVAÇÃO: Para orçamentos com mais de 100 unidades, entre em contato pelo WhatsApp 4199679-9517 enviando este PDF.",
+        180
+      );
+      doc.text(obs1Lines, 105, observationsY, { align: "center" });
+      observationsY += obs1Lines.length * 5;
+    }
+    
+    if (items.some(item => item.rigidMaterial === "forn_cliente")) {
+      doc.setFontSize(8);
+      doc.setFont("helvetica", "bold");
+      doc.setTextColor(200, 50, 50);
+      const obs2Lines = doc.splitTextToSize(
+        "OBSERVAÇÃO: Rígido (forn/Cliente) deve estar de acordo com especificações técnicas. Tamanho máximo 60x90cm e altura máxima 15cm.",
+        180
+      );
+      doc.text(obs2Lines, 105, observationsY, { align: "center" });
+      observationsY += obs2Lines.length * 5;
+    }
+    
     // Footer
     doc.setFontSize(8);
+    doc.setTextColor(0, 0, 0);
     doc.text("Calculadora de Orçamento para Impressões", 105, 285, { align: "center" });
     
     if (share && navigator.share) {
@@ -466,6 +504,7 @@ const StickerCalculator = () => {
                 id="quantity"
                 type="number"
                 min="1"
+                max="100"
                 placeholder="1"
                 value={quantity}
                 onChange={(e) => setQuantity(e.target.value)}
@@ -498,7 +537,7 @@ const StickerCalculator = () => {
               <Button
                 onClick={addItem}
                 className="w-full"
-                disabled={!height || !width}
+                disabled={!height || !width || (material === "sem_material" && rigidMaterial === "sem_rigido")}
               >
                 <Plus className="h-4 w-4 mr-2" />
                 Adicionar
@@ -535,18 +574,27 @@ const StickerCalculator = () => {
               </p>
             </div>
           )}
-        </CardContent>
+        </CardContent> 
+        {items.some(item => item.quantity === 100) && (
+          <div className="observacao my-4 mx-4 p-4 bg-red-50 border border-red-300 rounded-lg ">
+            <p className="text-center text-sm font-sm text-primary">
+              Esse app esta em constante evolução para um melhor atendimento, caso necessite de orçamento com mais de 100 unidades,
+              entre em contato pelo WhatsApp <strong>4199679-9517</strong> enviando o PDF gerado automaticamente pelo sistema!
+            </p> 
+          </div>
+        )}
+        {items.some(item => item.rigidMaterial === "forn_cliente") && (
+          <div className="observacao mt-3 my-4 mx-4 p-4 bg-red-50 border border-red-200 rounded-lg ">
+            <p className="text-center text-sm font-sm text-primary">
+              * A opção: <strong> Rígido (forn/Cliente) </strong> deve estar de acordo com as 
+              especificações técnicas para garantir a qualidade do serviço. Ex: Chapa de metal 20x30cm precisa estar
+              devidamente reta e limpa para entrar na maquina UV! Tamanho máximo 60x90cm e altura maxima 15cm.
+              Já uma aplicação de adesivo, geralmente tamanhos de 1.00m x (até) 2.00m para manter aplicação exata.
+            </p>
+          </div>
+        )}
 
-
-          
-        <div className="observacao my-4 mx-4 p-4 bg-red-50 border border-red-200 rounded-lg ">
-          <p className="text-center text-sm font-sm text-primary">
-            * A opção: <strong> Rígido (forn/Cliente) </strong> deve estar de acordo com as 
-            especificações técnicas para garantir a qualidade do serviço. Ex: Chapa de metal 20x30cm precisa estar
-            devidamente reta e limpa para entrar na maquina UV! Tamanho máximo 60x90cm e altura maxima 15cm.
-            Já uma aplicação de adesivo, geralmente tamanhos de 1.00m x (até) 2.00m para manter aplicação exata.
-          </p>
-        </div>      
+             
       </Card>
 
       {/*  
