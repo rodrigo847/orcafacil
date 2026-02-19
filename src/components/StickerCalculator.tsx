@@ -50,7 +50,7 @@ const DEFAULT_MATERIAL_PRICES: Record<string, MaterialPrice> = {
   vinil_branco_fosco: { name: "Adesivo Vinil Fosco", pricePerM2: 115 },
   vinil_branco_brilho: { name: "Adesivo Vinil Brilho", pricePerM2: 115 },
   vinil_transparente_brilho: { name: "Adesivo Vinil Transparente", pricePerM2: 135 },
-  papel_couche_fosco_150g: { name: "Adesivo Papel Fosco", pricePerM2: 50 },
+  papel_couche_fosco_150g: { name: "Couche Fosco 150g", pricePerM2: 50 },
   banner_brilho: { name: "Banner Brilho", pricePerM2: 120 },
   banner_fosco: { name: "Banner Fosco", pricePerM2: 120 },
 };
