@@ -5,6 +5,13 @@ const Index = () => {
     <div className="min-h-screen bg-background">
       {/* Header */}
       <header className="border-b border-border bg-card">
+        
+      <div className="flex items-center justify-center text-center text-foreground py-2
+        mx-md:px-50 px-1 mt-4 mb-6 rounded-lg">
+          <img src="./public/logo.png" className="w-32" alt="Logo" />
+          <h1 className="text-xl font-bold text-foreground pl-4">Copiadora Paraná Laser</h1>
+        </div>
+        
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center gap-3">
             <div className="p-2 rounded-lg bg-primary text-primary-foreground">
@@ -20,6 +27,8 @@ const Index = () => {
             </div>
           </div>
         </div>
+
+        
       </header>
 
       {/* Main Content */}
