@@ -109,8 +109,8 @@ const StickerCalculator = () => {
       return;
     }
 
-    if (qty > 100) {
-      alert("Quantidade máxima permitida: 100 unidades");
+    if (qty > 100000) {
+      alert("Quantidade máxima permitida: 100000 unidades");
       return;
     }
 
