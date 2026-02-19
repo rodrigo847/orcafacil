@@ -52,6 +52,8 @@ const DEFAULT_MATERIAL_PRICES: Record<string, MaterialPrice> = {
   vinil_transparente_brilho: { name: "Adesivo Vinil Transparente", pricePerM2: 135 },
   papel_adesivo_fosco: { name: "Adesivo Papel Fosco (Somente Laser)", pricePerM2: 80 },
   papel_adesivo_brilho: { name: "Adesivo Papel Brilho (Somente Laser)", pricePerM2: 80 },
+  banner_brilho: { name: "Banner Brilho", pricePerM2: 120 },
+  banner_fosco: { name: "Banner Fosco", pricePerM2: 120 },
 };
 
 // Materiais rígidos disponíveis
