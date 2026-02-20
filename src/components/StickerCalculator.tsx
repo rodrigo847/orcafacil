@@ -47,8 +47,8 @@ interface MaterialPrice {
 // Preços por m² baseados em tipos comuns de adesivos
 const DEFAULT_MATERIAL_PRICES: Record<string, MaterialPrice> = {
   sem_material: { name: "Não", pricePerM2: 0 },
-  vinil_branco_fosco: { name: "Adesivo Vinil Fosco", pricePerM2: 115 },
-  vinil_branco_brilho: { name: "Adesivo Vinil Brilho", pricePerM2: 115 },
+  vinil_branco_fosco: { name: "Adesivo Vinil Fosco", pricePerM2: 90 },
+  vinil_branco_brilho: { name: "Adesivo Vinil Brilho", pricePerM2: 90 },
   vinil_transparente_brilho: { name: "Adesivo Vinil Transparente", pricePerM2: 135 },
   papel_couche_fosco_150g: { name: "Couche Fosco 150g", pricePerM2: 50 },
   banner_brilho: { name: "Banner Brilho", pricePerM2: 120 },
