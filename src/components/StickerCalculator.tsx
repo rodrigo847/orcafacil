@@ -666,11 +666,11 @@ const StickerCalculator = () => {
       {/* Tabela de itens */}
       {items.length > 0 && (
         <Card className="border-border shadow-sm">
-          <CardHeader className="pb-4 flex flex-row items-center justify-between">
+          <CardHeader className="pb-4 grid grid-cols-1 gap-3 md:grid-cols-2 md:items-center">
             <CardTitle className="text-lg font-semibold text-foreground">
               Itens do Orçamento
             </CardTitle>
-            <div className="flex gap-2">
+            <div className="flex flex-col gap-2 sm:flex-row md:justify-self-end">
               <Button
                 variant="outline"
                 size="sm"

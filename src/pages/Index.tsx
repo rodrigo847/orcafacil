@@ -4,19 +4,16 @@ const Index = () => {
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
-      <header className="border-b border-border bg-card">
+      <header className="border-b border-border bg-card flex items-center justify-center">
         
-      <div className="flex items-center justify-center text-center text-foreground py-2
-        mx-md:px-50 px-1 mt-4 mb-6 rounded-lg">
-<<<<<<< HEAD
+      <div className="container flex items-center justify-center text-center text-foreground py-2
+        mx-md:px-50 px-1 mt-4 mb-6">
+
           <img src="logo.png" className="w-32" alt="Logo" /> {/*imagem na public, so nome.extensão*/}
-=======
-          <img src="logo.png" className="w-32" alt="Logo" />
->>>>>>> 183e95852b82f4b3689ecfb4c0cfe3132e0e6ccf
-          <h1 className="text-xl font-bold text-foreground pl-4">Copiadora Paraná Laser</h1>
+          {/*  <h1 className="text-xl font-bold text-foreground pl-4">Copiadora Paraná Laser</h1> */}
         </div>
         
-        <div className="container mx-auto px-4 py-4">
+        <div className="container mx-auto px-4 py-4 ">
           <div className="flex items-center gap-3">
             <div className="p-2 rounded-lg bg-primary text-primary-foreground">
               <Calculator className="h-6 w-6" />
