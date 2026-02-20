@@ -77,6 +77,8 @@ const PRINTING_TYPES = {
 
 const MINIMUM_PURCHASE = 60;
 
+const MINIMUM_PURCHASE = 60;
+
 
 
 const StickerCalculator = () => {
@@ -307,6 +309,24 @@ const StickerCalculator = () => {
       observationsY += minPurchaseLines.length * 5;
     }
     
+    if (totalBudget < MINIMUM_PURCHASE) {
+      doc.setFontSize(20);
+      doc.setFont("helvetica", "bold");
+      doc.setTextColor(200, 120, 0);
+
+      const minPurchaseText = `ATENCAO: COMPRA MINIMA DE ${formatCurrency(MINIMUM_PURCHASE)}. VALOR ATUAL: ${formatCurrency(totalBudget)}.`;
+      const minPurchaseLines = doc.splitTextToSize(minPurchaseText, 170);
+      const lineHeight = 8;
+      const boxPadding = 4;
+      const boxHeight = minPurchaseLines.length * lineHeight + boxPadding * 2;
+      const boxTop = observationsY - boxPadding;
+
+      doc.setDrawColor(255, 193, 7);
+      doc.setLineWidth(0.6);
+      doc.rect(15, boxTop, 180, boxHeight);
+      doc.text(minPurchaseLines, 105, observationsY + lineHeight - 2, { align: "center" });
+      observationsY += boxHeight + 6;
+    }
     // Observações condicionais
     if (items.some(item => item.quantity === 100)) {
       doc.setFontSize(8);
