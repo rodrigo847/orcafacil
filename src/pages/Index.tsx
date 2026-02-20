@@ -8,7 +8,7 @@ const Index = () => {
         
       <div className="flex items-center justify-center text-center text-foreground py-2
         mx-md:px-50 px-1 mt-4 mb-6 rounded-lg">
-          <img src="./public/logo.png" className="w-32" alt="Logo" />
+          <img src="logo.png" className="w-32" alt="Logo" /> {/*imagem na public, so nome.extensão*/}
           <h1 className="text-xl font-bold text-foreground pl-4">Copiadora Paraná Laser</h1>
         </div>
         

@@ -125,8 +125,8 @@ const StickerCalculator = () => {
     const printingPrice = PRINTING_TYPES[printingType as keyof typeof PRINTING_TYPES]?.pricePerM2 || 0;
     const rigidPrice = RIGID_MATERIALS[rigidMaterial as keyof typeof RIGID_MATERIALS]?.pricePerM2 || 0;
     
-    // Aplicar 40% de acréscimo para peças menores que 5x5cm (área < 0.0025 m²)
-    const isSmallPiece = area < 0.0025;
+    // Aplicar 40% de acréscimo para peças menores que 3x3cm (área < 0.0009 m²)
+    const isSmallPiece = area < 0.0009;
     const smallPieceMultiplier = isSmallPiece ? 1.4 : 1;
     
     const versoCost = verso ? area * (printingPrice * 0.4) : 0;
@@ -557,10 +557,10 @@ const StickerCalculator = () => {
                   {" "}({materialPrices[material].name} - {formatCurrency(materialPrices[material].pricePerM2)}/m² + {PRINTING_TYPES[printingType as keyof typeof PRINTING_TYPES]?.name}{rigidMaterial !== "sem_rigido" && ` + ${RIGID_MATERIALS[rigidMaterial as keyof typeof RIGID_MATERIALS]?.name}`}{verso && " + Verso"})
                 </span>
               </div>
-              {calculateArea(parseFloat(height), parseFloat(width), unit) < 0.0025 && (
+              {calculateArea(parseFloat(height), parseFloat(width), unit) < 0.0009 && (
                 <div className="mt-2 p-3 rounded-lg bg-orange-50 border border-orange-300">
                   <p className="text-center text-sm font-medium text-orange-700">
-                    ⚠️ Peça pequena (&lt; 5x5cm): Acréscimo de 40% aplicado devido à complexidade do corte.
+                    ⚠️ Peça pequena (&lt; 3x3cm): Acréscimo de 40% aplicado devido à complexidade do corte.
                   </p>
                 </div>
               )}
