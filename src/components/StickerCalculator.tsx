@@ -77,8 +77,6 @@ const PRINTING_TYPES = {
 
 const MINIMUM_PURCHASE = 60;
 
-const MINIMUM_PURCHASE = 60;
-
 
 
 const StickerCalculator = () => {
@@ -296,38 +294,25 @@ const StickerCalculator = () => {
     );
     
     let observationsY = finalY + 50;
-
-    if (totalBudget < MINIMUM_PURCHASE) {
-      doc.setFontSize(9);
-      doc.setFont("helvetica", "bold");
-      doc.setTextColor(200, 50, 50);
-      const minPurchaseLines = doc.splitTextToSize(
-        `ATENCAO: Compra minima de ${formatCurrency(MINIMUM_PURCHASE)}. Valor atual: ${formatCurrency(totalBudget)}.`,
-        180
-      );
-      doc.text(minPurchaseLines, 105, observationsY, { align: "center" });
-      observationsY += minPurchaseLines.length * 5;
-    }
     
+    // Observações condicionais
     if (totalBudget < MINIMUM_PURCHASE) {
-      doc.setFontSize(20);
+      doc.setFontSize(15);
       doc.setFont("helvetica", "bold");
-      doc.setTextColor(200, 120, 0);
-
+      doc.setTextColor(220, 0, 0);
       const minPurchaseText = `ATENCAO: COMPRA MINIMA DE ${formatCurrency(MINIMUM_PURCHASE)}. VALOR ATUAL: ${formatCurrency(totalBudget)}.`;
-      const minPurchaseLines = doc.splitTextToSize(minPurchaseText, 170);
+      const minPurchaseLines = doc.splitTextToSize(minPurchaseText, 180);
       const lineHeight = 8;
       const boxPadding = 4;
       const boxHeight = minPurchaseLines.length * lineHeight + boxPadding * 2;
       const boxTop = observationsY - boxPadding;
-
       doc.setDrawColor(255, 193, 7);
       doc.setLineWidth(0.6);
       doc.rect(15, boxTop, 180, boxHeight);
-      doc.text(minPurchaseLines, 105, observationsY + lineHeight - 2, { align: "center" });
+      doc.text(minPurchaseLines, 105, observationsY + lineHeight, { align: "center" });
       observationsY += boxHeight + 6;
     }
-    // Observações condicionais
+
     if (items.some(item => item.quantity === 100)) {
       doc.setFontSize(8);
       doc.setFont("helvetica", "bold");
@@ -624,10 +609,10 @@ const StickerCalculator = () => {
           )}
 
           {/* Aviso de compra mínima */}
-          {items.length > 0 && totalBudget < MINIMUM_PURCHASE && (
+          {items.length > 0 && totalBudget < 60 && (
             <div className="mt-4 p-3 rounded-lg bg-yellow-50 border border-yellow-300">
               <p className="text-center text-sm font-medium text-yellow-700">
-                ⚠️ Atenção: Compra mínima de {formatCurrency(MINIMUM_PURCHASE)}. Valor atual: {formatCurrency(totalBudget)}
+                ⚠️ Atenção: Compra mínima de {formatCurrency(60)}. Valor atual: {formatCurrency(totalBudget)}
               </p>
             </div>
           )}
