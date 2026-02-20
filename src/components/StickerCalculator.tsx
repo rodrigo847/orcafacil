@@ -75,10 +75,13 @@ const PRINTING_TYPES = {
   laser: { name: "Imp. Laser", pricePerM2: 45 },
 };
 
+const MINIMUM_PURCHASE = 60;
+
 
 
 const StickerCalculator = () => {
   const [items, setItems] = useState<StickerItem[]>([]);
+  const [customerName, setCustomerName] = useState<string>("");
   const [height, setHeight] = useState<string>("");
   const [width, setWidth] = useState<string>("");
   const [unit, setUnit] = useState<"m²" | "mm" | "cm">("cm");
@@ -193,6 +196,13 @@ const StickerCalculator = () => {
   };
 
   const generatePDF = async (share: boolean = false) => {
+    const trimmedName = customerName.trim();
+
+    if (!trimmedName) {
+      alert("Nome do cliente é obrigatório para gerar o orçamento");
+      return;
+    }
+
     const doc = new jsPDF();
     const currentDate = new Date();
     
@@ -205,6 +215,7 @@ const StickerCalculator = () => {
     doc.setFontSize(10);
     doc.setFont("helvetica", "normal");
     doc.text(`Data: ${formatDate(currentDate)}`, 14, 35);
+    doc.text(`Cliente: ${trimmedName}`, 14, 40);
     
     // Table data
     const tableData = items.map((item) => [
@@ -283,6 +294,18 @@ const StickerCalculator = () => {
     );
     
     let observationsY = finalY + 50;
+
+    if (totalBudget < MINIMUM_PURCHASE) {
+      doc.setFontSize(9);
+      doc.setFont("helvetica", "bold");
+      doc.setTextColor(200, 50, 50);
+      const minPurchaseLines = doc.splitTextToSize(
+        `ATENCAO: Compra minima de ${formatCurrency(MINIMUM_PURCHASE)}. Valor atual: ${formatCurrency(totalBudget)}.`,
+        180
+      );
+      doc.text(minPurchaseLines, 105, observationsY, { align: "center" });
+      observationsY += minPurchaseLines.length * 5;
+    }
     
     // Observações condicionais
     if (items.some(item => item.quantity === 100)) {
@@ -379,6 +402,19 @@ const StickerCalculator = () => {
         <CardContent>
           
           <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+            <div className="space-y-2 md:col-span-3">
+              <Label htmlFor="customerName" className="text-sm font-medium text-foreground">
+                Nome do Cliente
+              </Label>
+              <Input
+                id="customerName"
+                type="text"
+                placeholder="Ex: Joao Silva"
+                value={customerName}
+                onChange={(e) => setCustomerName(e.target.value)}
+                className="bg-background"
+              />
+            </div>
             <div className="space-y-2">
               <Label htmlFor="height" className="text-sm font-medium text-foreground">
                 Altura (cm)
@@ -568,10 +604,10 @@ const StickerCalculator = () => {
           )}
 
           {/* Aviso de compra mínima */}
-          {items.length > 0 && totalBudget < 35 && (
+          {items.length > 0 && totalBudget < MINIMUM_PURCHASE && (
             <div className="mt-4 p-3 rounded-lg bg-yellow-50 border border-yellow-300">
               <p className="text-center text-sm font-medium text-yellow-700">
-                ⚠️ Atenção: Compra mínima de {formatCurrency(35)}. Valor atual: {formatCurrency(totalBudget)}
+                ⚠️ Atenção: Compra mínima de {formatCurrency(MINIMUM_PURCHASE)}. Valor atual: {formatCurrency(totalBudget)}
               </p>
             </div>
           )}
