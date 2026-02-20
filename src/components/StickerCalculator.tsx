@@ -300,7 +300,7 @@ const StickerCalculator = () => {
       doc.setFontSize(15);
       doc.setFont("helvetica", "bold");
       doc.setTextColor(220, 0, 0);
-      const minPurchaseText = `ATENCAO: COMPRA MINIMA DE ${formatCurrency(MINIMUM_PURCHASE)}. VALOR ATUAL: ${formatCurrency(totalBudget)}.`;
+      const minPurchaseText = `ATENÇÃO: COMPRA MÍNIMA DE ${formatCurrency(MINIMUM_PURCHASE)}. VALOR ATUAL: ${formatCurrency(totalBudget)}.`;
       const minPurchaseLines = doc.splitTextToSize(minPurchaseText, 180);
       const lineHeight = 8;
       const boxPadding = 4;
