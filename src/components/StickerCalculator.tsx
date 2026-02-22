@@ -695,9 +695,9 @@ const StickerCalculator = () => {
         {items.some(item => item.rigidMaterial === "forn_cliente") && (
           <div className="observacao mt-3 my-4 mx-4 p-4 bg-red-50 border border-red-200 rounded-lg ">
             <p className="text-center text-sm font-sm text-primary">
-              * A opção: <strong> Rígido (forn/Cliente) </strong> deve estar de acordo com as 
+              * A opção: <strong> Rígido (Material fornecido pelo Cliente) </strong> deve estar de acordo com as 
               especificações técnicas para garantir a qualidade do serviço. Ex: Chapa de metal 20x30cm precisa estar
-              devidamente reta e limpa para entrar na maquina UV! Tamanho máximo 60x90cm e altura maxima 15cm.
+              devidamente reta, não torta e limpa para entrar na maquina de impressão UV! Tamanho máximo 60x90cm e altura maxima 15cm.
               Já uma aplicação de adesivo, geralmente tamanhos de 1.00m x (até) 2.00m para manter aplicação exata.
             </p>
           </div>
