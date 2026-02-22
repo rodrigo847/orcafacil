@@ -394,11 +394,11 @@ const StickerCalculator = () => {
     doc.setFont("helvetica", "normal");
     doc.setTextColor(0, 0, 0);
     // Note about stickers
-    doc.setFontSize(9);
+    doc.setFontSize(6);
     doc.setFont("helvetica", "italic");
     doc.setTextColor(0, 0, 0);
     doc.text(
-      `Os adesivos já estão sendo orçados com meio corte e entrega em cartelas para facilitar envio`,
+      `*Os adesivos são orçados já com meio corte e entrega em cartelas para facilitar envio!`,
       105,
       finalY + 30,
       { align: "center" }
