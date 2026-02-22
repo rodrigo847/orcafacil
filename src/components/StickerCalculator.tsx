@@ -311,16 +311,7 @@ const StickerCalculator = () => {
     doc.setFont("helvetica", "bold");
     doc.text(`Total do Orçamento: ${formatCurrency(totalBudget)}`, 195, finalY + 15, { align: "right" });
     
-    // Note about stickers
-    doc.setFontSize(9);
-    doc.setFont("helvetica", "italic");
-    doc.setTextColor(0, 0, 0);
-    doc.text(
-      `Os adesivos já estão sendo orçados com meio corte e entrega em cartelas para facilitar envio`,
-      105,
-      finalY + 30,
-      { align: "center" }
-    );
+    
     
     let observationsY = finalY + 45;
     
@@ -402,6 +393,16 @@ const StickerCalculator = () => {
     doc.setFontSize(6);
     doc.setFont("helvetica", "normal");
     doc.setTextColor(0, 0, 0);
+    // Note about stickers
+    doc.setFontSize(9);
+    doc.setFont("helvetica", "italic");
+    doc.setTextColor(0, 0, 0);
+    doc.text(
+      `Os adesivos já estão sendo orçados com meio corte e entrega em cartelas para facilitar envio`,
+      105,
+      finalY + 30,
+      { align: "center" }
+    );
     doc.text("O pedido será iniciado após a confirmação do pagamento: PIX: 01.906.658/0001-20 (enviar comprovante junto com arquivo) pelo WhatsApp: 4199679-9517 ;", 14, 275, { align: "left", maxWidth: 180 });
     doc.text("Produção em até 2 dias úteis (após aprovação da arte);", 14, 279, { align: "left" });
     doc.text("Arte: Não produzimos arte;", 14, 283, { align: "left" });
