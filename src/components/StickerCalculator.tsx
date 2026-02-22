@@ -32,6 +32,7 @@ interface StickerItem {
   printingType: string;
   rigidMaterial: string;
   verso: boolean;
+  specialCut: boolean;
   quantity: number;
   area: number;
   unitPrice: number;
@@ -47,8 +48,8 @@ interface MaterialPrice {
 // Preços por m² baseados em tipos comuns de adesivos
 const DEFAULT_MATERIAL_PRICES: Record<string, MaterialPrice> = {
   sem_material: { name: "Não", pricePerM2: 0 },
-  vinil_branco_fosco: { name: "Adesivo Vinil Fosco", pricePerM2: 90 },
-  vinil_branco_brilho: { name: "Adesivo Vinil Brilho", pricePerM2: 90 },
+  vinil_branco_fosco: { name: "Adesivo Vinil Fosco", pricePerM2: 80 },
+  vinil_branco_brilho: { name: "Adesivo Vinil Brilho", pricePerM2: 80 },
   vinil_transparente_brilho: { name: "Adesivo Vinil Transparente", pricePerM2: 135 },
   papel_couche_fosco_150g: { name: "Couche Fosco 150g", pricePerM2: 50 },
   banner_brilho: { name: "Banner Brilho", pricePerM2: 120 },
@@ -58,7 +59,7 @@ const DEFAULT_MATERIAL_PRICES: Record<string, MaterialPrice> = {
 // Materiais rígidos disponíveis
 const RIGID_MATERIALS: Record<string, MaterialPrice> = {
   sem_rigido: { name: "Não", pricePerM2: 0 },
-  forn_cliente: { name: "Forn/Cliente", pricePerM2: 475 },
+  forn_cliente: { name: "Material Cliente", pricePerM2: 200 },
   ps_1mm: { name: "PS 1mm", pricePerM2: 200 },
   ps_2mm: { name: "PS 2mm", pricePerM2: 250 },
   ps_3mm: { name: "PS 3mm", pricePerM2: 380 },
@@ -72,7 +73,7 @@ const PRINTING_TYPES = {
   sem_impressao: { name: "Sem impressão", pricePerM2: 0 },
   eco_solvente: { name: "Eco-solvente", pricePerM2: 80 },
   uv: { name: "Imp. UV", pricePerM2: 48 },
-  laser: { name: "Imp. Laser", pricePerM2: 45 },
+  //* laser: { name: "Imp. Laser", pricePerM2: 45,*/}
 };
 
 const MINIMUM_PURCHASE = 60;
@@ -90,6 +91,7 @@ const StickerCalculator = () => {
   const [rigidMaterial, setRigidMaterial] = useState<string>("sem_rigido");
   const [quantity, setQuantity] = useState<string>("1");
   const [verso, setVerso] = useState<boolean>(false);
+  const [specialCut, setSpecialCut] = useState<boolean>(false);
   
   // Preços editáveis
   const [materialPrices, setMaterialPrices] = useState<Record<string, MaterialPrice>>(DEFAULT_MATERIAL_PRICES);
@@ -127,13 +129,14 @@ const StickerCalculator = () => {
     const pricePerM2 = materialPrices[material].pricePerM2;
     const printingPrice = PRINTING_TYPES[printingType as keyof typeof PRINTING_TYPES]?.pricePerM2 || 0;
     const rigidPrice = RIGID_MATERIALS[rigidMaterial as keyof typeof RIGID_MATERIALS]?.pricePerM2 || 0;
+    const specialCutPrice = specialCut ? 70 : 0;
     
     // Aplicar 40% de acréscimo para peças menores que 3x3cm (área < 0.0009 m²)
     const isSmallPiece = area < 0.0009;
     const smallPieceMultiplier = isSmallPiece ? 1.4 : 1;
     
     const versoCost = verso ? area * (printingPrice * 0.4) : 0;
-    const unitPrice = area * (pricePerM2 + printingPrice + rigidPrice) * smallPieceMultiplier + versoCost;
+    const unitPrice = area * (pricePerM2 + printingPrice + rigidPrice + specialCutPrice) * smallPieceMultiplier + versoCost;
     const totalPrice = unitPrice * qty;
 
     const newItem: StickerItem = {
@@ -145,6 +148,7 @@ const StickerCalculator = () => {
       printingType,
       rigidMaterial,
       verso,
+      specialCut,
       quantity: qty,
       area,
       unitPrice,
@@ -155,8 +159,9 @@ const StickerCalculator = () => {
     setItems([...items, newItem]);
     setHeight("");
     setWidth("");
-    setQuantity("1");
+    setQuantity("");
     setVerso(false);
+    setSpecialCut(false);
     setRigidMaterial("sem_rigido");
     setPrintingType("sem_impressao");
     setMaterial("sem_material");
@@ -206,10 +211,27 @@ const StickerCalculator = () => {
     const doc = new jsPDF();
     const currentDate = new Date();
     
-    // Header
-    doc.setFontSize(20);
+    // Header with logo
+    try {
+      const logoImg = new Image();
+      logoImg.src = 'logo.png';
+      await new Promise((resolve, reject) => {
+        logoImg.onload = resolve;
+        logoImg.onerror = reject;
+        setTimeout(reject, 2000); // timeout após 2s
+      });
+      
+      // Calcular proporção para não distorcer
+      const logoWidth = 25;
+      const logoHeight = (logoImg.height / logoImg.width) * logoWidth;
+      doc.addImage(logoImg, 'PNG', 14, 12, logoWidth, logoHeight);
+    } catch (error) {
+      console.warn('Logo não carregada:', error);
+    }
+    
+    doc.setFontSize(14);
     doc.setFont("helvetica", "bold");
-    doc.text("Orçamento de Impressões", 105, 20, { align: "center" });
+    doc.text("Orça Fácil | Copiadora Paraná Laser", 105, 20, { align: "center" });
     
     // Date and time
     doc.setFontSize(10);
@@ -286,39 +308,77 @@ const StickerCalculator = () => {
     doc.setFont("helvetica", "italic");
     doc.setTextColor(100, 100, 100);
     doc.text(
-      `Este orçamento é válido por 7 dias a contar da data de emissão: ( ${getValidityDate(currentDate)}).
-      Os adesivos ja estão sendo orçados com meio corte e entrega em cartelas para facilitar envio`,
+      `Este orçamento é válido por 7 dias a contar da data de emissão: (Válido até: ${getValidityDate(currentDate)}).`,
       105,
       finalY + 30,
       { align: "center" }
     );
+    doc.setTextColor(0, 0, 0);
+    doc.text(
+      `Os adesivos já estão sendo orçados com meio corte e entrega em cartelas para facilitar envio`,
+      105,
+      finalY + 38,
+      { align: "center" }
+    );
     
-    let observationsY = finalY + 50;
+    let observationsY = finalY + 58;
     
     // Observações condicionais
     if (totalBudget < MINIMUM_PURCHASE) {
-      doc.setFontSize(15);
+      doc.setFontSize(10);
       doc.setFont("helvetica", "bold");
+      
+      const valueMin = formatCurrency(MINIMUM_PURCHASE);
+      const valueActual = formatCurrency(totalBudget);
+      
+      const lineHeight = 4;
+      const boxPadding = 7;
+      const boxTop = observationsY;
+      let currentY = observationsY + boxPadding + lineHeight;
+      
+      // Texto em preto com valores em vermelho - linha 1
+      doc.setTextColor(0, 0, 0);
+      const text1 = "ATENÇÃO: VALOR MÍNIMO: ";
+      const text1Width = doc.getTextWidth(text1);
+      const valueMinWidth = doc.getTextWidth(valueMin);
+      const text2 = " VALOR ATUAL: ";
+      const text2Width = doc.getTextWidth(text2);
+      const valueActualWidth = doc.getTextWidth(valueActual);
+      
+      const totalWidth = text1Width + valueMinWidth + text2Width + valueActualWidth;
+      let xPos = 105 - totalWidth / 2;
+      
+      doc.text(text1, xPos, currentY);
+      xPos += text1Width;
       doc.setTextColor(220, 0, 0);
-      const minPurchaseText = `ATENÇÃO: COMPRA MÍNIMA DE ${formatCurrency(MINIMUM_PURCHASE)}. VALOR ATUAL: ${formatCurrency(totalBudget)}.`;
-      const minPurchaseLines = doc.splitTextToSize(minPurchaseText, 180);
-      const lineHeight = 8;
-      const boxPadding = 4;
-      const boxHeight = minPurchaseLines.length * lineHeight + boxPadding * 2;
-      const boxTop = observationsY - boxPadding;
+      doc.text(valueMin, xPos, currentY);
+      xPos += valueMinWidth;
+      doc.setTextColor(0, 0, 0);
+      doc.text(text2, xPos, currentY);
+      xPos += text2Width;
+      doc.setTextColor(220, 0, 0);
+      doc.text(valueActual, xPos, currentY);
+      
+      // Segunda linha
+      currentY += lineHeight;
+      doc.setTextColor(0, 0, 0);
+      doc.text("Adicione quantidade maior ou mais itens até atingir o valor mínimo", 105, currentY, { align: "center" });
+      
+      // Desenhar retângulo ao redor
+      const boxHeight = 2 * lineHeight + boxPadding * 2;
       doc.setDrawColor(255, 193, 7);
       doc.setLineWidth(0.6);
       doc.rect(15, boxTop, 180, boxHeight);
-      doc.text(minPurchaseLines, 105, observationsY + lineHeight, { align: "center" });
+      
       observationsY += boxHeight + 6;
     }
 
-    if (items.some(item => item.quantity === 100)) {
+    if (items.some(item => item.quantity === 100000)) {
       doc.setFontSize(8);
       doc.setFont("helvetica", "bold");
       doc.setTextColor(200, 50, 50);
       const obs1Lines = doc.splitTextToSize(
-        "OBSERVAÇÃO: Para orçamentos com mais de 100 unidades, entre em contato pelo WhatsApp 4199679-9517 enviando este PDF.",
+        "OBSERVAÇÃO: Para orçamentos com mais de 100000 unidades, entre em contato pelo WhatsApp 4199679-9517 enviando este PDF.",
         180
       );
       doc.text(obs1Lines, 105, observationsY, { align: "center" });
@@ -407,7 +467,7 @@ const StickerCalculator = () => {
         <CardContent>
           
           <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-            <div className="space-y-2 md:col-span-3">
+            <div className="space-y-2 col-span-2 md:col-span-3">
               <Label htmlFor="customerName" className="text-sm font-medium text-foreground">
                 Nome do Cliente
               </Label>
@@ -492,6 +552,7 @@ const StickerCalculator = () => {
                   setMaterial(value);
                   if (value !== "sem_material") {
                     setRigidMaterial("sem_rigido");
+                    setSpecialCut(false);
                   }
                 }}
                 disabled={rigidMaterial !== "sem_rigido"}
@@ -546,15 +607,14 @@ const StickerCalculator = () => {
                 id="quantity"
                 type="number"
                 min="1"
-                max="100"
-                placeholder="1"
+                placeholder="Ex: 10"
                 value={quantity}
                 onChange={(e) => setQuantity(e.target.value)}
                 className="bg-background"
               />
             </div>
 
-            <div className="col-span-2 md:col-span-1 flex items-end gap-2">
+             <div className="flex items-end gap-2">
               <div className="flex items-center space-x-2 pb-2">
                 <Checkbox
                   id="+verso"
@@ -575,10 +635,31 @@ const StickerCalculator = () => {
               </div>
             </div>
 
-            <div className="flex items-end">
+             <div className="flex items-end gap-2">
+              <div className="flex items-center space-x-2 pb-2">
+                <Checkbox
+                  id="specialCut"
+                  checked={specialCut}
+                  onCheckedChange={(checked) => setSpecialCut(checked as boolean)}
+                  disabled={material !== "sem_material"}
+                />
+                <Label 
+                  htmlFor="specialCut" 
+                  className={`text-sm cursor-pointer ${
+                    material !== "sem_material" 
+                      ? "text-muted-foreground opacity-50" 
+                      : "text-foreground"
+                  }`}
+                >
+                  *Corte Especial (Corte laser)
+                </Label>
+              </div>
+            </div>
+
+            <div className="col-span-2 md:col-span-3 flex items-end">
               <Button
                 onClick={addItem}
-                className="w-full"
+                className="w-full md:w-auto md:px-8"
                 disabled={!height || !width || (material === "sem_material" && rigidMaterial === "sem_rigido")}
               >
                 <Plus className="h-4 w-4 mr-2" />
@@ -586,27 +667,6 @@ const StickerCalculator = () => {
               </Button>
             </div>
           </div>
-
-          {/* Preview do cálculo */}
-          {height && width && (
-            <>
-              <div className="mt-4 p-3 rounded-lg bg-secondary/50 text-sm">
-                <span className="text-muted-foreground">Prévia: </span>
-                <span className="font-medium text-foreground">
-                  {height} x {width} {unit} = {" "}
-                  {(calculateArea(parseFloat(height), parseFloat(width), unit) * 10000).toFixed(2)} cm²
-                  {" "}({materialPrices[material].name} - {formatCurrency(materialPrices[material].pricePerM2)}/m² + {PRINTING_TYPES[printingType as keyof typeof PRINTING_TYPES]?.name}{rigidMaterial !== "sem_rigido" && ` + ${RIGID_MATERIALS[rigidMaterial as keyof typeof RIGID_MATERIALS]?.name}`}{verso && " + Verso"})
-                </span>
-              </div>
-              {calculateArea(parseFloat(height), parseFloat(width), unit) < 0.0009 && (
-                <div className="mt-2 p-3 rounded-lg bg-orange-50 border border-orange-300">
-                  <p className="text-center text-sm font-medium text-orange-700">
-                    ⚠️ Peça pequena (&lt; 3x3cm): Acréscimo de 40% aplicado devido à complexidade do corte.
-                  </p>
-                </div>
-              )}
-            </>
-          )}
 
           {/* Aviso de compra mínima */}
           {items.length > 0 && totalBudget < 60 && (
@@ -617,7 +677,7 @@ const StickerCalculator = () => {
             </div>
           )}
         </CardContent> 
-        {items.some(item => item.quantity === 100) && (
+        {items.some(item => item.quantity === 100000) && (
           <div className="observacao my-4 mx-4 p-4 bg-red-50 border border-red-300 rounded-lg ">
             <p className="text-center text-sm font-sm text-primary">
               Esse app esta em constante evolução para um melhor atendimento, caso necessite de orçamento com mais de 100 unidades,
