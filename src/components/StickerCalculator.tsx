@@ -239,6 +239,14 @@ const StickerCalculator = () => {
     doc.text(`Data: ${formatDate(currentDate)}`, 14, 35);
     doc.text(`Cliente: ${trimmedName}`, 14, 40);
     
+    // Validity notice in header (right side)
+    doc.setFontSize(8);
+    doc.setFont("helvetica", "italic");
+    doc.setTextColor(0, 0, 0);
+    doc.text(`Orçamento Válido até: ${getValidityDate(currentDate)}`, 195, 35, { align: "right" });
+    doc.setTextColor(0, 0, 0);
+    doc.setFont("helvetica", "normal");
+    
     // Table data
     const tableData = items.map((item) => [
       `${item.height} x ${item.width} ${item.unit}`,
@@ -303,25 +311,18 @@ const StickerCalculator = () => {
     doc.setFont("helvetica", "bold");
     doc.text(`Total do Orçamento: ${formatCurrency(totalBudget)}`, 195, finalY + 15, { align: "right" });
     
-    // Validity notice
+    // Note about stickers
     doc.setFontSize(9);
     doc.setFont("helvetica", "italic");
-    doc.setTextColor(100, 100, 100);
-    doc.text(
-      `Este orçamento é válido por 7 dias a contar da data de emissão: (Válido até: ${getValidityDate(currentDate)}).`,
-      105,
-      finalY + 30,
-      { align: "center" }
-    );
     doc.setTextColor(0, 0, 0);
     doc.text(
       `Os adesivos já estão sendo orçados com meio corte e entrega em cartelas para facilitar envio`,
       105,
-      finalY + 38,
+      finalY + 30,
       { align: "center" }
     );
     
-    let observationsY = finalY + 58;
+    let observationsY = finalY + 45;
     
     // Observações condicionais
     if (totalBudget < MINIMUM_PURCHASE) {
@@ -398,9 +399,15 @@ const StickerCalculator = () => {
     }
     
     // Footer
-    doc.setFontSize(8);
+    doc.setFontSize(6);
+    doc.setFont("helvetica", "normal");
     doc.setTextColor(0, 0, 0);
-    doc.text("Calculadora de Orçamento para Impressões", 105, 285, { align: "center" });
+    doc.text("O pedido será iniciado após a confirmação do pagamento: PIX: 01.906.658/0001-20 (enviar comprovante junto com arquivo) pelo WhatsApp: 4199679-9517 ;", 14, 275, { align: "left", maxWidth: 180 });
+    doc.text("Produção em até 2 dias úteis (após aprovação da arte);", 14, 279, { align: "left" });
+    doc.text("Arte: Não produzimos arte;", 14, 283, { align: "left" });
+    
+    doc.setFontSize(8);
+    doc.text("Orça Fácil - Calculadora de Orçamento rápido", 105, 290, { align: "center" });
     
     if (share && navigator.share) {
       // Convert to blob for sharing
