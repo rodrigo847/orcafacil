@@ -382,7 +382,7 @@ const StickerCalculator = () => {
       doc.setFont("helvetica", "bold");
       doc.setTextColor(200, 50, 50);
       const obs2Lines = doc.splitTextToSize(
-        "OBSERVAÇÃO: Rígido (Material fornecido pelo Cliente) deve estar de acordo com especificações técnicas. Tamanho máximo 60x90cm e altura máxima 15cm.",
+        "* A opção: Rígido (Material fornecido pelo Cliente) deve estar de acordo com as especificações técnicas para garantir a qualidade do serviço. Ex: Chapa de metal 20x30cm precisa estar devidamente reta, não torta e limpa para entrar na maquina de impressão UV! Tamanho máximo 60x90cm e altura maxima 15cm. Já uma aplicação de adesivo, geralmente tamanhos de 1.00m x (até) 2.00m para manter aplicação exata.",
         180
       );
       doc.text(obs2Lines, 105, observationsY, { align: "center" });
