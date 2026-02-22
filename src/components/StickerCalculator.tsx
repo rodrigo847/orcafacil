@@ -264,7 +264,7 @@ const StickerCalculator = () => {
     const pageWidth = doc.internal.pageSize.getWidth();
     const tableWidth = pageWidth * 0.95;
     const sideMargin = (pageWidth - tableWidth) / 2;
-    const baseColumnWidths = [18, 22, 20, 16, 10, 10, 14, 8, 18, 18];
+    const baseColumnWidths = [17, 20, 18, 16, 10, 14, 14, 10, 17, 17];
     const totalBaseWidth = baseColumnWidths.reduce((sum, value) => sum + value, 0);
     const scaledColumnWidths = baseColumnWidths.map(
       (value) => (value * tableWidth) / totalBaseWidth
@@ -279,8 +279,8 @@ const StickerCalculator = () => {
       5: { cellWidth: scaledColumnWidths[5], halign: "center" as const },
       6: { cellWidth: scaledColumnWidths[6], halign: "center" as const },
       7: { cellWidth: scaledColumnWidths[7], halign: "center" as const },
-      8: { cellWidth: scaledColumnWidths[8], halign: "right" as const },
-      9: { cellWidth: scaledColumnWidths[9], halign: "right" as const },
+      8: { cellWidth: scaledColumnWidths[8], halign: "center" as const },
+      9: { cellWidth: scaledColumnWidths[9], halign: "center" as const },
     };
 
     // Generate table
@@ -288,7 +288,7 @@ const StickerCalculator = () => {
       startY: 45,
       margin: { left: sideMargin, right: sideMargin },
       tableWidth,
-      head: [["Tam.", "Adesivo", "Impressão", "Rígido.", "Verso", "Corte Esp.", "Área", "Qtd", "Preço Unit", "Total"]],
+      head: [["Tam.", "Adesivo", "Impressão", "Rígido.", "Verso", "Corte Esp.", "Área", "Qtd", "Valor Unit.", "Total"]],
       body: tableData,
       theme: "striped",
       headStyles: {
@@ -801,14 +801,14 @@ const StickerCalculator = () => {
               <Table>
                 <TableHeader>
                   <TableRow>
-                    <TableHead className="text-foreground">Tam.</TableHead>
+                    <TableHead className="text-foreground">Tamamho</TableHead>
                     <TableHead className="text-foreground">Adesivo</TableHead>
                     <TableHead className="text-foreground">Impressão</TableHead>
                     <TableHead className="text-foreground">Rígido</TableHead>
                     <TableHead className="text-foreground">Verso</TableHead>
                     <TableHead className="text-foreground">Área (cm²)</TableHead>
-                    <TableHead className="text-foreground">Qtd</TableHead>
-                    <TableHead className="text-foreground text-right">Preço Unit.</TableHead>
+                    <TableHead className="text-foreground text-left">Qtd</TableHead>
+                    <TableHead className="text-foreground text-right">Valor Unit.</TableHead>
                     <TableHead className="text-foreground text-right">Total</TableHead>
                     <TableHead className="w-12"></TableHead>
                   </TableRow>
