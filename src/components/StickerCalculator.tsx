@@ -254,6 +254,7 @@ const StickerCalculator = () => {
       PRINTING_TYPES[item.printingType as keyof typeof PRINTING_TYPES]?.name || item.printingType,
       RIGID_MATERIALS[item.rigidMaterial as keyof typeof RIGID_MATERIALS]?.name || item.rigidMaterial,
       item.verso ? "Sim" : "Não",
+      item.specialCut ? "Sim" : "Não",
       `${(item.area * 10000).toFixed(2)} cm²`,
       item.quantity.toString(),
       formatCurrency(item.unitPrice),
@@ -263,7 +264,7 @@ const StickerCalculator = () => {
     const pageWidth = doc.internal.pageSize.getWidth();
     const tableWidth = pageWidth * 0.95;
     const sideMargin = (pageWidth - tableWidth) / 2;
-    const baseColumnWidths = [18, 22, 20, 16, 10, 14, 8, 18, 18];
+    const baseColumnWidths = [18, 22, 20, 16, 10, 10, 14, 8, 18, 18];
     const totalBaseWidth = baseColumnWidths.reduce((sum, value) => sum + value, 0);
     const scaledColumnWidths = baseColumnWidths.map(
       (value) => (value * tableWidth) / totalBaseWidth
@@ -279,6 +280,7 @@ const StickerCalculator = () => {
       6: { cellWidth: scaledColumnWidths[6], halign: "center" as const },
       7: { cellWidth: scaledColumnWidths[7], halign: "center" as const },
       8: { cellWidth: scaledColumnWidths[8], halign: "right" as const },
+      9: { cellWidth: scaledColumnWidths[9], halign: "right" as const },
     };
 
     // Generate table
@@ -286,7 +288,7 @@ const StickerCalculator = () => {
       startY: 45,
       margin: { left: sideMargin, right: sideMargin },
       tableWidth,
-      head: [["Tam.", "Adesivo", "Impressão", "Rígido.", "Verso", "Área", "Qtd", "Preço Unit", "Total"]],
+      head: [["Tam.", "Adesivo", "Impressão", "Rígido.", "Verso", "Corte Esp.", "Área", "Qtd", "Preço Unit", "Total"]],
       body: tableData,
       theme: "striped",
       headStyles: {
