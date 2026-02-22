@@ -393,22 +393,18 @@ const StickerCalculator = () => {
     doc.setFontSize(6);
     doc.setFont("helvetica", "normal");
     doc.setTextColor(0, 0, 0);
-    // Note about stickers
+    
+    // Footer with payment and WhatsApp info
     doc.setFontSize(6);
-    doc.setFont("helvetica", "italic");
+    doc.setFont("helvetica", "normal");
     doc.setTextColor(0, 0, 0);
-    doc.text(
-      `*Os adesivos são orçados já com meio corte e entrega em cartelas para facilitar envio!`,
-      105,
-      finalY + 30,
-      { align: "center" }
-    );
-    doc.text("O pedido será iniciado após a confirmação do pagamento: PIX: 01.906.658/0001-20 (enviar comprovante junto com arquivo) pelo WhatsApp: 4199679-9517 ;", 14, 275, { align: "left", maxWidth: 180 });
-    doc.text("Produção em até 2 dias úteis (após aprovação da arte);", 14, 279, { align: "left" });
-    doc.text("Arte: Não produzimos arte;", 14, 283, { align: "left" });
+    doc.text("O pedido será iniciado após a confirmação do pagamento: PIX: 01.906.658/0001-20 (enviar comprovante junto com arquivo) pelo WhatsApp: 4199679-9517 ;", 14, 265, { align: "left", maxWidth: 180 });
+    doc.text("Produção em até 2 dias úteis (após aprovação da arte);", 14, 269, { align: "left" });
+    doc.text("Arte: Não produzimos arte;", 14, 273, { align: "left" });
+    doc.text("*Os adesivos são orçados já com meio corte e entrega em cartelas para facilitar envio!", 14, 277, { align: "left", maxWidth: 150 });
     
     doc.setFontSize(8);
-    doc.text("Orça Fácil - Calculadora de Orçamento rápido", 105, 290, { align: "center" });
+    doc.text("Orça Fácil - Calculadora de Orçamento rápido", 105, 283, { align: "center" });
     
     if (share && navigator.share) {
       // Convert to blob for sharing
