@@ -125,6 +125,32 @@ const StickerCalculator = () => {
       return;
     }
 
+    // Converter para cm para validação
+    const convertToCm = (value: number, u: "m²" | "mm" | "cm"): number => {
+      if (u === "mm") return value / 10;
+      if (u === "cm") return value;
+      if (u === "m²") return Math.sqrt(value) * 100; // aproximado
+      return value;
+    };
+
+    const hCm = convertToCm(h, unit);
+    const wCm = convertToCm(w, unit);
+
+    // Validações de impressão
+    if (printingType === "uv") {
+      if (hCm > 60 || wCm > 90) {
+        alert("Impressão UV: máximo 60cm x 90cm");
+        return;
+      }
+    }
+
+    if (printingType === "eco_solvente") {
+      if (hCm > 180 || wCm > 5000) { // 1.80m = 180cm, 50m = 5000cm
+        alert("Impressão Eco-solvente: máximo 1.80m x 50m");
+        return;
+      }
+    }
+
     const area = calculateArea(h, w, unit);
     const pricePerM2 = materialPrices[material].pricePerM2;
     const printingPrice = PRINTING_TYPES[printingType as keyof typeof PRINTING_TYPES]?.pricePerM2 || 0;
