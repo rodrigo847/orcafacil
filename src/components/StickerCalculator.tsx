@@ -33,6 +33,7 @@ interface StickerItem {
   rigidMaterial: string;
   verso: boolean;
   specialCut: boolean;
+  finishing: string;
   quantity: number;
   area: number;
   unitPrice: number;
@@ -76,6 +77,16 @@ const PRINTING_TYPES = {
   //* laser: { name: "Imp. Laser", pricePerM2: 45,*/}
 };
 
+// Acabamentos disponíveis
+const FINISHING_TYPES: Record<string, MaterialPrice> = {
+  sem_acabamento: { name: "Sem acabamento", pricePerM2: 0 },
+ // laminacao_brilho: { name: "Laminação Brilho", pricePerM2: 50 },
+ // laminacao_fosco: { name: "Laminação Fosco", pricePerM2: 50 },
+  com_ilhos: { name: "Com Ilhós", pricePerM2: 10 },
+  com_madeira: { name: "Com Madeira", pricePerM2: 10 },
+  aplicacao_cavalete: { name: "Aplicação em cavalete", pricePerM2: 60 },
+};
+
 const MINIMUM_PURCHASE = 60;
 
 
@@ -92,6 +103,7 @@ const StickerCalculator = () => {
   const [quantity, setQuantity] = useState<string>("1");
   const [verso, setVerso] = useState<boolean>(false);
   const [specialCut, setSpecialCut] = useState<boolean>(false);
+  const [finishing, setFinishing] = useState<string>("sem_acabamento");
   
   // Preços editáveis
   const [materialPrices, setMaterialPrices] = useState<Record<string, MaterialPrice>>(DEFAULT_MATERIAL_PRICES);
@@ -155,6 +167,7 @@ const StickerCalculator = () => {
     const pricePerM2 = materialPrices[material].pricePerM2;
     const printingPrice = PRINTING_TYPES[printingType as keyof typeof PRINTING_TYPES]?.pricePerM2 || 0;
     const rigidPrice = RIGID_MATERIALS[rigidMaterial as keyof typeof RIGID_MATERIALS]?.pricePerM2 || 0;
+    const finishingPrice = FINISHING_TYPES[finishing as keyof typeof FINISHING_TYPES]?.pricePerM2 || 0;
     const specialCutPrice = specialCut ? 70 : 0;
     
     // Aplicar 40% de acréscimo para peças menores que 3x3cm (área < 0.0009 m²)
@@ -162,7 +175,7 @@ const StickerCalculator = () => {
     const smallPieceMultiplier = isSmallPiece ? 1.4 : 1;
     
     const versoCost = verso ? area * (printingPrice * 0.4) : 0;
-    const unitPrice = area * (pricePerM2 + printingPrice + rigidPrice + specialCutPrice) * smallPieceMultiplier + versoCost;
+    const unitPrice = area * (pricePerM2 + printingPrice + rigidPrice + finishingPrice + specialCutPrice) * smallPieceMultiplier + versoCost;
     const totalPrice = unitPrice * qty;
 
     const newItem: StickerItem = {
@@ -175,6 +188,7 @@ const StickerCalculator = () => {
       rigidMaterial,
       verso,
       specialCut,
+      finishing,
       quantity: qty,
       area,
       unitPrice,
@@ -188,6 +202,7 @@ const StickerCalculator = () => {
     setQuantity("");
     setVerso(false);
     setSpecialCut(false);
+    setFinishing("sem_acabamento");
     setRigidMaterial("sem_rigido");
     setPrintingType("sem_impressao");
     setMaterial("sem_material");
@@ -279,6 +294,7 @@ const StickerCalculator = () => {
       materialPrices[item.material]?.name || item.material,
       PRINTING_TYPES[item.printingType as keyof typeof PRINTING_TYPES]?.name || item.printingType,
       RIGID_MATERIALS[item.rigidMaterial as keyof typeof RIGID_MATERIALS]?.name || item.rigidMaterial,
+      FINISHING_TYPES[item.finishing as keyof typeof FINISHING_TYPES]?.name || item.finishing,
       item.verso ? "Sim" : "Não",
       item.specialCut ? "Sim" : "Não",
       `${(item.area * 10000).toFixed(2)} cm²`,
@@ -290,7 +306,7 @@ const StickerCalculator = () => {
     const pageWidth = doc.internal.pageSize.getWidth();
     const tableWidth = pageWidth * 0.95;
     const sideMargin = (pageWidth - tableWidth) / 2;
-    const baseColumnWidths = [17, 20, 18, 16, 10, 14, 14, 10, 17, 17];
+    const baseColumnWidths = [17, 20, 18, 16, 16, 10, 14, 14, 10, 17, 17];
     const totalBaseWidth = baseColumnWidths.reduce((sum, value) => sum + value, 0);
     const scaledColumnWidths = baseColumnWidths.map(
       (value) => (value * tableWidth) / totalBaseWidth
@@ -307,6 +323,7 @@ const StickerCalculator = () => {
       7: { cellWidth: scaledColumnWidths[7], halign: "center" as const },
       8: { cellWidth: scaledColumnWidths[8], halign: "center" as const },
       9: { cellWidth: scaledColumnWidths[9], halign: "center" as const },
+      10: { cellWidth: scaledColumnWidths[10], halign: "center" as const },
     };
 
     // Generate table
@@ -314,7 +331,7 @@ const StickerCalculator = () => {
       startY: 45,
       margin: { left: sideMargin, right: sideMargin },
       tableWidth,
-      head: [["Tam.", "Adesivo", "Impressão", "Rígido.", "Verso", "Corte Esp.", "Área", "Qtd", "Valor Unit.", "Total"]],
+      head: [["Tam.", "Adesivo", "Impressão", "Rígido.", "Acabamento", "Verso", "Corte Esp.", "Área", "Qtd", "Valor Unit.", "Total"]],
       body: tableData,
       theme: "striped",
       headStyles: {
@@ -575,34 +592,6 @@ const StickerCalculator = () => {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="Adesivo" className="text-sm font-medium text-foreground">
-                Adesivo
-              </Label>
-              <Select 
-                value={material} 
-                onValueChange={(value) => {
-                  setMaterial(value);
-                  if (value !== "sem_material") {
-                    setRigidMaterial("sem_rigido");
-                    setSpecialCut(false);
-                  }
-                }}
-                disabled={rigidMaterial !== "sem_rigido"}
-              >
-                <SelectTrigger id="Adesivo" className="bg-background" disabled={rigidMaterial !== "sem_rigido"}>
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  {Object.entries(materialPrices).map(([key, value]) => (
-                    <SelectItem key={key} value={key}>
-                      {value.name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-
-            <div className="space-y-2">
               <Label htmlFor="rigidMaterial" className="text-sm font-medium text-foreground">
                 Material Rígido              
                 </Label>
@@ -632,6 +621,65 @@ const StickerCalculator = () => {
             </div>
 
             <div className="space-y-2">
+              <Label htmlFor="Adesivo" className="text-sm font-medium text-foreground">
+                Adesivo
+              </Label>
+              <Select 
+                value={material} 
+                onValueChange={(value) => {
+                  setMaterial(value);
+                  if (value !== "sem_material") {
+                    setRigidMaterial("sem_rigido");
+                    setSpecialCut(false);
+                  }
+                  if (value !== "banner_brilho" && value !== "banner_fosco") {
+                    setFinishing("sem_acabamento");
+                  }
+                }}
+                disabled={rigidMaterial !== "sem_rigido"}
+              >
+                <SelectTrigger id="Adesivo" className="bg-background" disabled={rigidMaterial !== "sem_rigido"}>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  {Object.entries(materialPrices).map(([key, value]) => (
+                    <SelectItem key={key} value={key}>
+                      {value.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="finishing" className="text-sm font-medium text-foreground">
+                Acabamento
+              </Label>
+              <Select 
+                value={finishing} 
+                onValueChange={setFinishing}
+                disabled={material !== "banner_brilho" && material !== "banner_fosco"}
+              >
+                <SelectTrigger 
+                  id="finishing" 
+                  className="bg-background" 
+                  disabled={material !== "banner_brilho" && material !== "banner_fosco"}
+                >
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  {Object.entries(FINISHING_TYPES).map(([key, value]) => (
+                    <SelectItem key={key} value={key}>
+                      {value.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+
+
+            <div className="space-y-2">
               <Label htmlFor="quantity" className="text-sm font-medium text-foreground">
                 Quantidade
               </Label>
@@ -645,6 +693,8 @@ const StickerCalculator = () => {
                 className="bg-background"
               />
             </div>
+
+            
 
              <div className="flex items-end gap-2">
               <div className="flex items-center space-x-2 pb-2">
@@ -831,6 +881,7 @@ const StickerCalculator = () => {
                     <TableHead className="text-foreground">Adesivo</TableHead>
                     <TableHead className="text-foreground">Impressão</TableHead>
                     <TableHead className="text-foreground">Rígido</TableHead>
+                    <TableHead className="text-foreground">Acabamento</TableHead>
                     <TableHead className="text-foreground">Verso</TableHead>
                     <TableHead className="text-foreground">Área (cm²)</TableHead>
                     <TableHead className="text-foreground text-left">Qtd</TableHead>
@@ -848,6 +899,7 @@ const StickerCalculator = () => {
                       <TableCell>{materialPrices[item.material]?.name || item.material}</TableCell>
                       <TableCell>{PRINTING_TYPES[item.printingType as keyof typeof PRINTING_TYPES]?.name || item.printingType}</TableCell>
                       <TableCell>{RIGID_MATERIALS[item.rigidMaterial as keyof typeof RIGID_MATERIALS]?.name || item.rigidMaterial}</TableCell>
+                      <TableCell>{FINISHING_TYPES[item.finishing as keyof typeof FINISHING_TYPES]?.name || item.finishing}</TableCell>
                       <TableCell className="text-center">
                         {item.verso ? "Sim" : "Não"}
                       </TableCell>
