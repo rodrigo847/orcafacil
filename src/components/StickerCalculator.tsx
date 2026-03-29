@@ -52,7 +52,7 @@ const DEFAULT_MATERIAL_PRICES: Record<string, MaterialPrice> = {
   vinil_branco_fosco: { name: "Adesivo Vinil Fosco", pricePerM2: 80 },
   vinil_branco_brilho: { name: "Adesivo Vinil Brilho", pricePerM2: 80 },
   vinil_transparente_brilho: { name: "Adesivo Vinil Transparente", pricePerM2: 135 },
-  papel_couche_fosco_150g: { name: "Couche Fosco 150g", pricePerM2: 50 },
+  papel_couche_fosco_150g: { name: "Couche Fosco 150g", pricePerM2: 23 },
   banner_brilho: { name: "Banner Brilho", pricePerM2: 15 },
   banner_fosco: { name: "Banner Fosco", pricePerM2: 15 },
 };
@@ -128,7 +128,7 @@ const StickerCalculator = () => {
     }
 
     if (qty > 100000) {
-      alert("Quantidade máxima permitida: 100000 unidades");
+      alert("Quantidade máxima permitida: 1000 unidades");
       return;
     }
 
