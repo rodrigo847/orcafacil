@@ -72,7 +72,7 @@ const RIGID_MATERIALS: Record<string, MaterialPrice> = {
 // Tipos de impressão disponíveis
 const PRINTING_TYPES = {
   sem_impressao: { name: "Sem impressão", pricePerM2: 0 },
-  eco_solvente: { name: "Eco-solvente", pricePerM2: 80 },
+  eco_solvente: { name: "Eco-solvente", pricePerM2: 55 },
   uv: { name: "Imp. UV", pricePerM2: 48 },
   //* laser: { name: "Imp. Laser", pricePerM2: 45,*/}
 };
