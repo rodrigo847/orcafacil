@@ -66,7 +66,7 @@ const RIGID_MATERIALS: Record<string, MaterialPrice> = {
   ps_3mm: { name: "PS 3mm", pricePerM2: 380 },
   acrilico_2mm: { name: "Acrílico 2mm", pricePerM2: 400 },
   acrilico_3mm: { name: "Acrílico 3mm", pricePerM2: 500 },
-  acrilico_6mm: { name: "Acrílico 6mm", pricePerM2: 950 },
+  acrilico_6mm: { name: "Acrílico 6mm", pricePerM2: 1250 },
 };
 
 // Tipos de impressão disponíveis
