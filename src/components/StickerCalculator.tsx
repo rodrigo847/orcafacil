@@ -49,8 +49,8 @@ interface MaterialPrice {
 // Preços por m² baseados em tipos comuns de adesivos
 const DEFAULT_MATERIAL_PRICES: Record<string, MaterialPrice> = {
   sem_material: { name: "Não", pricePerM2: 0 },
-  vinil_branco_fosco: { name: "Adesivo Vinil Fosco", pricePerM2: 80 },
-  vinil_branco_brilho: { name: "Adesivo Vinil Brilho", pricePerM2: 80 },
+  vinil_branco_fosco: { name: "Adesivo Vinil Fosco", pricePerM2: 35 },
+  vinil_branco_brilho: { name: "Adesivo Vinil Brilho", pricePerM2: 35 },
   vinil_transparente_brilho: { name: "Adesivo Vinil Transparente", pricePerM2: 135 },
   papel_couche_fosco_150g: { name: "Couche/Offset 150g", pricePerM2: 1 },
   banner_brilho: { name: "Banner Brilho", pricePerM2: 35 },
@@ -73,7 +73,7 @@ const RIGID_MATERIALS: Record<string, MaterialPrice> = {
 const PRINTING_TYPES = {
   sem_impressao: { name: "Sem impressão", pricePerM2: 0 },
   eco_solvente: { name: "Eco-solvente", pricePerM2: 55 },
-  uv: { name: "Imp. UV", pricePerM2: 48 },
+  uv: { name: "Imp. UV", pricePerM2: 60 },
   //* laser: { name: "Imp. Laser", pricePerM2: 45,*/}
 };
 
